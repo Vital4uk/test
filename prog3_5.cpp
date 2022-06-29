@@ -4,9 +4,9 @@
 //В залежності від введеного віку вивести текст або помилку
 #include <iostream>
 #include <string>
-#include <vector>
-#include <algorithm>
-#include <cmath>
+#include <vector>  // do you need these library now?
+#include <algorithm>  // do you need these library now?
+#include <cmath>  // do you need these library now?
 
 			
 int main()
@@ -27,39 +27,44 @@ int main()
 	char friend_sex = 0;
 	std::cout << "Введіть 'm' якщо товариш хлопець або 'f' якщо товариш дівчина" << std::endl;
 	std::cin >> friend_sex;
-		while (friend_sex != 'm' && friend_sex != 'f') { //цикл якщо не введені букви m або f допоки вони не введуться
-			std::cout << "Будь ласка уважніше!" << std::endl;
-			std::cout << "Введіть 'm' якщо товариш хлопець або 'f' якщо товариш дівчина" << std::endl;
-			std::cin >> friend_sex;//повторне зчитування статі і запис у змінну
-		}
-		if (friend_sex == 'm') //якщо стать чоловіча (буква m) виводимо такий текст
-			std::cout << "Якщо ти побачиш  " << friend_name << ", будь ласка попроси його мені зателефонувати." << std::endl;
-		if (friend_sex == 'f')
-			std::cout << "Якщо ти побачиш  " << friend_name << ", будь ласка попроси її мені зателефонувати." << std::endl;
+	while (friend_sex != 'm' && friend_sex != 'f') { //цикл якщо не введені букви m або f допоки вони не введуться
+		std::cout << "Будь ласка уважніше!" << std::endl;
+		std::cout << "Введіть 'm' якщо товариш хлопець або 'f' якщо товариш дівчина" << std::endl;
+		std::cin >> friend_sex;//повторне зчитування статі і запис у змінну
+	}
+	if ('m' == friend_sex)  //якщо стать чоловіча (буква m) виводимо такий текст
+	{  // always add parentheses
+		std::cout << "Якщо ти побачиш  " << friend_name << ", будь ласка попроси його мені зателефонувати." << std::endl;
+	}
+	if ( 'f' == friend_sex)  // codestyle, you can accidentally write '=' instead of '==', and in case  'f' = friend_sex, the compiler will always give an error
+	{
+		std::cout << "Якщо ти побачиш  " << friend_name << ", будь ласка попроси її мені зателефонувати." << std::endl;
+	}
 
 	//зчитування віку і видача тексту в залежності від цифри
 	std::cout << "Будь ласка, введіть свій вік: (в роках)" << std::endl;
 	int age;	
 	std::cin >> age; 
-		//цикл якщо введений вік менше 0 і більше 110 допоки не буде введене число з цього діапазону замість функції з книги оскільки не використовується бібліотека з книги
-		while (age <= 0 || age >= 110) {
-			std::cout << "Ви шуткуєте!" << std::endl;
-			std::cout << "Будь ласка введіть свій справжній вік:" << std::endl;
-			std::cin >> age;
-		}	
-		std::cout << "Я чув, що тільки но відсвяткував день народження і тобі виповнилось " << age << " років." << std::endl;
-		if (age < 12) //якщо вік менше 12 років або 17 або більше 70 виводимо текст
-			std::cout << "Наступного року тобі виповниться " << ++age << " років." << std::endl;
-		if (age == 17) 
-			std::cout << "Наступного року ти зможеш голосувати" << std::endl;
-		if (age > 70) 
-			std::cout << "Сподіваюсь, що ти не нудьгуєш на пенсії" << std::endl;
+	//цикл якщо введений вік менше 0 і більше 110 допоки не буде введене число з цього діапазону замість функції з книги оскільки не використовується бібліотека з книги
+	while (age <= 0 || age >= 110) {
+		std::cout << "Ви шуткуєте!\n" << "Будь ласка введіть свій справжній вік:" << std::endl;
+		std::cin >> age;
+	}	
+	std::cout << "Я чув, що тільки но відсвяткував день народження і тобі виповнилось " << age << " років." << std::endl;
+	if (age < 12) //якщо вік менше 12 років або 17 або більше 70 виводимо текст
+	{
+		std::cout << "Наступного року тобі виповниться " << ++age << " років." << std::endl;
+	}
+	if (17 == age) 
+	{
+		std::cout << "Наступного року ти зможеш голосувати" << std::endl;
+	}
+	if (age > 70) 
+	{
+		std::cout << "Сподіваюсь, що ти не нудьгуєш на пенсії" << std::endl;
+	}
 	
-	
-	std::cout << "Щиро ваш " << std::endl;
-	std::cout << "" << std::endl;
-	std::cout << "" << std::endl;
-	std::cout << "Віталій" << std::endl;
-	
+	std::cout << "Щиро ваш\n\n\n" << "Віталій" << std::endl;
+
 	return 0;
 }
