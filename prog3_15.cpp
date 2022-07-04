@@ -6,18 +6,19 @@
 int main()
 {
 	int coin_10_kop, coin_50_kop, coin_1_grn, coin_2_grn, coin_5_grn, coin_10_grn, kop_sum, grn_sum;
-	
-	std::cout << "Введіть кількість монет номіналом 10 коп: " << "\n";
+	const std::string prompt_string {"Введіть кількість монет номіналом "};
+
+	std::cout << prompt_string << "10 коп: \n";
 	std::cin >> coin_10_kop;
-	std::cout << "Введіть кількість монет номіналом 50 коп: " << "\n";
+	std::cout << prompt_string << "50 коп: \n";
 	std::cin >> coin_50_kop;
-	std::cout << "Введіть кількість монет номіналом 1 грн: " << "\n";
+	std::cout << prompt_string << "1 грн: \n";
 	std::cin >> coin_1_grn;
-	std::cout << "Введіть кількість монет номіналом 2 грн: " << "\n";
+	std::cout << prompt_string << "2 грн: \n";
 	std::cin >> coin_2_grn;
-	std::cout << "Введіть кількість монет номіналом 5 грн: " << "\n";
+	std::cout << prompt_string << "5 грн: \n";
 	std::cin >> coin_5_grn;
-	std::cout << "Введіть кількість монет номіналом 10 грн: " << "\n";
+	std::cout << prompt_string << "10 грн: \n";
 	std::cin >> coin_10_grn;
 	
 	//якщо залишок від ділення кількості монет 10 коп дорівнює одиниці і кількість монет 10 коп
