@@ -2,22 +2,19 @@
 //без використання оператора множення
 #include <iostream>
 #include <string>
-#include <vector>
 
-int square(int x)
+int square(int number)
 {
 	int j = 0;
-	int y = 0;
+	int square_number = 0;
 
-	while (j<x)
+	while (j<number)
 	{
-		y += x;
+		square_number += number;
 		++j;
 	}
-	return y; 
+	return square_number; 
 }
-
-
 
 int main()
 {
@@ -25,6 +22,5 @@ int main()
 	{
 		std::cout << i << "\t" << square(i) << "\n";
 	}
-	
 	return 0;	
 }
