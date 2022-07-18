@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 int main()
 {
@@ -14,9 +13,9 @@ int main()
 	}					//в кінець вектора words (новий елемент вектора
 	std::cout << "Rezult: \n";
 
-	std::vector<std::string> disliked = {"broccoli", "tomato", "potato", "strawberry" }; //масив слів які треба замінювати
+	const std::vector<std::string> disliked = {"broccoli", "tomato", "potato", "strawberry" }; //масив слів які треба замінювати
 
-	bool print;
+	bool print = false;
 	for (int i = 0; i < words.size(); ++i) //проганяємо весь масив введених слів
 	{
 		for (int j = 0; j < disliked.size(); ++j) //проганяємо весь масив заборонених слів
@@ -25,7 +24,7 @@ int main()
 			{
 				std::cout << "BLEEP" << "\n";//запікуємо
 				print = true;	//позначка що слово вже запікане
-				j = disliked.size(); //зупинка перевірки введеного слова з наступники в бібілотеці запікуваних слів 
+				break; //зупинка перевірки введеного слова з наступники в бібілотеці запікуваних слів 
  // потрібно для того, щоб перевірка цього ж слова з наступним в бібліотеці
  // запікуваних не привела нас в else що в свою чергу приведе нас
  // до не правильного друку цього ж слова після того як запікаємо його
@@ -35,7 +34,7 @@ int main()
 				print = false;
 			}
 		}	
-		if (print == false)
+		if (!print)
 		{
 			std::cout << words[i] << "\n";
 			//якщо дане слово не запікали, друкуємо його
