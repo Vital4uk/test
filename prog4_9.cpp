@@ -11,7 +11,9 @@
 #include <algorithm>
 
 
-std::string input_unit() //функія введенння одиниць виміру
+//функія введенння одиниць виміру
+//видає строкове значення введеного елементу виміру
+std::string input_unit() 
 {
 	std::string i_unit = "";
 	std::cin >> i_unit;
@@ -19,7 +21,10 @@ std::string input_unit() //функія введенння одиниць вим
 	return i_unit;
 }
 
-double input_number()  //функція введення кількості одиниць виміру
+//функція введення кількості одиниць виміру
+//повертає десяткове число відстані
+//запобігає некоректному вводу числа
+double input_number() 
 {
 	while (true)
 	{
@@ -39,28 +44,20 @@ double input_number()  //функція введення кількості од
 	}
 }	
 
-bool compare_units (std::string unit) //функція порівняння одиниць виміру
+//функція порівняння одиниць виміру.
+//приймає введені раніше одиниці виміру.
+//перевіряє чи збігаються введені одиниці виміру
+//з допустими за відповідними умовами.
+//видає true чи false.
+bool compare_units (std::string unit) 
 {
-//поки вводяться допустимі значення - все ок
-//як тільки ввели не допустиме значення одиниць виміру - ок
-//але після цього вводимо наступне допустиме значення і програма падає
-//видає повідомлення: Segmentation fault (core dumped)
-//не знаю в чому тут проблема, пробував 2 варіанти функції, і перевірку в main ставив
-//не допомагає
 
 	bool i_compare = false;
 
-//	if (unit == "cm" || unit == "m" || unit == "in" || unit == "ft")
-//	{
-//		i_compare = true;
-//	}	
-//	return i_compare;
-
-
 	const std::vector<std::string> unit_permiss = {"cm","m","in","ft"}; //вектор з допустимими одиницями виміру
-	for (int j = 0; j <= 4; ++j)
+	for (const std::string unit_elem : unit_permiss)
 	{
-		if (unit == unit_permiss[j])
+		if (unit == unit_elem)
 		{
 			i_compare = true;
 		}
@@ -68,9 +65,13 @@ bool compare_units (std::string unit) //функція порівняння од
 	return i_compare;
 }
 
-double transformation (double number, std::string unit) //функція для перетворення різних одиниць виміру в метри
+//функція для перетворення різних одиниць виміру в метри.
+//приймає введені раніше відстань та одиниці виміру.
+//перетворює введені відстані в метри.
+//видає десяткове число відстані в метрах.
+double transformation (double number, std::string unit) 
 {
-	double i_meters = 1.0;
+	double i_meters = 0;
 	if (unit == "cm")
 	{
 		i_meters = number/100;
@@ -94,68 +95,65 @@ int main()
 {
 	double number = 0;	//для введених чисел
 	std::string unit = "";	//для введених одиниць
+	double min_number = 0;
+	double max_number = 0;
+	std::string min_unit = " ";
+	std::string max_unit = " ";
 	double min = std::numeric_limits<double>::max(); //присвоюємо min найбільше з можливих чисел double
 	double max = std::numeric_limits<double>::lowest();//присвоюємо max найменше з можливих числел double
 	bool compare = false;//для веревірки введених одиниць виміру
 	int all_amount = 0; //для загальної кількості значень
 	double meters = 0;	//для перетворених відстаней
 	double sum_in_meters = 0; // загальна відстань
-	int place_min = 0; // місце мінімального значення у векторі відстаней
-	int place_max = 0; // місце максимального значення у векторі відстаней	
-	std::vector<double> numbers; // вектор відстаней
-	std::vector<std::string> units; // вектор одиниць вимірру
 	std::vector<double> all_meters; // вектор для перетворени значень
 	for (int i = 0; i < std::numeric_limits<double>::max(); ++i) //цикл вводу значень
 	{
 		number = input_number();
 		unit = input_unit();
 
-		if (unit != "|") //вихід з циклу
-		{	
-			compare = compare_units(unit);
-			
-			if (number < 0) //перевірка на від'ємну відстань
-			{
-				std::cout << "Відстань не може бути від'ємною.\n";
-			}
-			else if (!compare) //перевірка на допустимі значення одиниць виміру
-			{
-				std::cout << "'" << unit << "' є не допустимою одиницею виміру.\n";
-			}
-			else //прийом значень
-			{
-				numbers.push_back(number);
-				units.push_back(unit);
-				++all_amount;
-				meters = transformation(number, unit);
-				sum_in_meters += meters;
-				all_meters.push_back(meters);
-		
-				if (meters <= min)//перше введене число буде в любому випадку найменше,
-					      //тому що воно завжди менше ніж найбільше число з можливих
-				{	
-					std::cout << numbers[i] << " " << units[i] << " найменше серед введених чисел\n";
-					min = meters;
-					place_min = i;
-				}
-				else if (meters >= max)//якщо ми введемо більше число за раніше введене
-						   //воно автоматично буде найбільше
-						   //так як воно завжди більше за найменше число з усіх можливих
-				{
-					std::cout << numbers[i] << " " << units[i] << " найбільше серед введених чисел\n";
-					max = meters;
-					place_max = i;
-				}
-				else
-				{
-					std::cout << numbers[i] << " " << units[i] << "\n";
-				}
-			}
-		}
-		else
+		if (unit == "|") //вихід з циклу
 		{
 			break;
 		}	
+		compare = compare_units(unit);
+			
+		if (number < 0) //перевірка на від'ємну відстань
+		{
+			std::cout << "Відстань не може бути від'ємною.\n";
+		}
+		else if (!compare) //перевірка на допустимі значення одиниць виміру
+		{
+			std::cout << "'" << unit << "' є не допустимою одиницею виміру.\n";
+		}
+		else //прийом значень
+		{
+			++all_amount;
+			meters = transformation(number, unit);
+			sum_in_meters += meters;
+			all_meters.push_back(meters);
+
+			if (meters <= min)//перше введене число буде в любому випадку найменше,
+				      //тому що воно завжди менше ніж найбільше число з можливих
+			{	
+				std::cout << number << " " << unit << " найменше серед введених чисел\n";
+				min = meters;
+				min_number = number;
+				min_unit = unit;
+			}
+			else if (meters >= max)//якщо ми введемо більше число за раніше введене
+				   //воно автоматично буде найбільше
+				   //так як воно завжди більше за найменше число з усіх можливих
+			{
+				std::cout << number << " " << unit << " найбільше серед введених чисел\n";
+				max = meters;
+				max_number = number;
+				max_unit = unit;
+			}
+			else
+			{
+				std::cout << number << " " << unit << "\n";
+			}
+		}
 	}
 	
 	std::sort(all_meters.begin(), all_meters.end()); //сортуємо масив з метрами
@@ -170,14 +168,14 @@ int main()
 	}
 	else if (all_amount == 1)
 	{
-		std::cout << "Максимальне і мінімальне значення відстані однакові: " << numbers[place_min] << " " << units[place_min] << "\n";
+		std::cout << "Максимальне і мінімальне значення відстані однакові: " << min_number << " " << min_unit << "\n";
 		std::cout << "Кількість введених значень: " << all_amount << "\n";
 		std::cout << "Загальна відстань: " << sum_in_meters << " метрів.\n";
 	}
 	else
 	{
-		std::cout << "Найменше введене значення: " << numbers[place_min] << " " << units[place_min] << "\n";
-		std::cout << "Найбільше введене значення: " << numbers[place_max] << " " << units[place_max] << "\n";
+		std::cout << "Найменше введене значення: " << min_number << " " << min_unit << "\n";
+		std::cout << "Найбільше введене значення: " << max_number << " " << max_unit << "\n";
 		std::cout << "Кількість введених значень: " << all_amount << "\n";
 		std::cout << "Загальна відстань: " << sum_in_meters << " метрів.\n";
 	}
