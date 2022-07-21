@@ -53,24 +53,18 @@ char get_operation()
 //вертає оператор словом
 std::string get_action_word (char operation)
 {
-	std::string action_word;
-
 	switch (operation)
 	{
 		case '+':
-			action_word = "Сума ";
-			break;
+			return { "Сума " };
 		case '-':
-			action_word = "Різниця ";
-			break;
+			return { "Різниця " };
 		case '*':
-			action_word = "Добуток ";
-			break;
+			return { "Добуток " };
 		case '/':
-			action_word = "Частка ";
-			break;
+			return { "Частка " };
 	}
-	return action_word;
+	return {};
 }	
 
 //функція яка виконує введену дію
@@ -79,27 +73,18 @@ std::string get_action_word (char operation)
 //вертає вирахувану дію
 double do_action (char operation, double val1, double val2)
 {
-	double do_action = 0;
-	
 	switch (operation)
 	{
 		case '+':
-		{	
-			do_action = val1+val2;
-			break;
-		}
+			return { val1+val2 };
 		case '-':
-		{
-			do_action = val1-val2;
-			break;
-		}
+			return { val1-val2 };
 		case '*':
-		{	
-			do_action = val1*val2;
-			break;
-		}
-		case
-	return do_action;
+			return { val1*val2 };
+		case '/':
+			return { val1/val2 };
+	}
+	return {};
 }	
 
 int main ()
