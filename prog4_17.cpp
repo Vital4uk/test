@@ -76,17 +76,17 @@ double get_number ()
 
 //функця вводу оператора
 //повертає опертатор + - * /
-char get_operat()
+char get_operation()
 {
 	while (true)
 	{
 		std::cout << "Введіть оператор '+' '-' '*' '/': \n";
-		char i_operat = ' ';
-		std::cin >> i_operat;
+		char operation;
+		std::cin >> operation;
 		std::cin.ignore(32767,'\n'); //забирає лишні введені символи 
-		if (i_operat == '+' || i_operat == '-' || i_operat == '*' || i_operat == '/')
+		if ('+' == operation || '-' == operation || '*' == operation || '/' == operation)
 		{
-			return i_operat;
+			return operation;
 		}
 		else
 		{
@@ -99,54 +99,40 @@ char get_operat()
 //і запис його словом
 //приймає введений опертор
 //вертає оператор словом
-std::string get_action_word (char i_operat)
+std::string get_action_word (char operation)
 {
-	std::string action_word = " ";
-	
-	if (i_operat == '+')
+	switch (operation)
 	{
-		action_word = "Сума ";
+		case '+':
+			return { "Сума " };
+		case '-':
+			return { "Різниця " };
+		case '*':
+			return { "Добуток " };
+		case '/':
+			return { "Частка " };
 	}
-	else if (i_operat == '-')
-	{
-		action_word = "Різниця ";
-	}
-	else if (i_operat == '*')
-	{
-		action_word = "Добуток ";
-	}
-	else
-	{
-		action_word = "Частка ";
-	}
-	return action_word;
+	return {};
 }	
 
 //функція яка виконує введену дію
 //між введеними числами
 //приймає введені числа і оператор
 //вертає вирахувану дію
-double do_action (char i_operat, double val1, double val2)
+double do_action (char operation, double val1, double val2)
 {
-	double do_action = 0;
-	
-	if (i_operat == '+')
+	switch (operation)
 	{
-		do_action = val1+val2;
+		case '+':
+			return { val1+val2 };
+		case '-':
+			return { val1-val2 };
+		case '*':
+			return { val1*val2 };
+		case '/':
+			return { val1/val2 };
 	}
-	else if (i_operat == '-')
-	{
-		do_action = val1-val2;
-	}
-	else if (i_operat == '*')
-	{
-		do_action = val1*val2;
-	}
-	else if (i_operat == '/')
-	{
-		do_action = val1/val2;
-	}
-	return do_action;
+	return {};
 }	
 
 
@@ -154,7 +140,7 @@ int main ()
 {
 	double val1 = get_number();
 	double val2 = get_number();
-	char operat = get_operat();
+	char operat = get_operation();
 	std::string action_word = get_action_word(operat);
 	double action = do_action(operat, val1, val2);
 	
