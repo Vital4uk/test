@@ -3,57 +3,17 @@
 //вивдодить список введених імен і рахунків
 #include <iostream>
 #include <vector>
+#include <cassert>
+#include <sstream>
+#include <limits>
 
-//функія введенння імені
-//видає строкове значення введеного імені
-std::string GetName() 
+// Use (void) to silence unused warnings.
+#define assertm(exp, msg) assert(((void)msg, exp))
+
+//Функція друку результатів роботи програми
+//приймає вектори імен і рахунків
+void print_results(std::vector<std::string> names, std::vector<double> scores) 
 {
-    std::cout << "Введіть ім'я та рахунок: \n";
-    std::cout << "Для виходу введіть 'NoName 0' \n";
-	std::string name;
-	std::cin >> name;
-
-	return name;
-}
-
-//функція введення числа
-//повертає десяткове число
-//запобігає некоректному вводу числа
-double GetNumber() 
-{
-	while (true)
-	{
-		double num = 0;
-       	std::cin >> num;
-		if (std::cin.fail())	//якщо попереднє введене значення не вдале
-		{
-			std::cin.clear(); //повертаємо cin в звичайний режим роботи
-			std::cin.ignore(32767, '\n'); //і видаляємо значення попереднього вводу i вхідного буфера
-			std::cout << "Введене не коректне значення. \n";			      
-			std::cout << "Введіть значення повторно. \n";			      
-		}
-		else
-		{
-			return num;
-		}
-	}
-}	
-
-int main()
-{
-    std::string name = " ";
-    double number = 1;
-    std::vector<std::string> names;
-    std::vector<double> scores;
-
-    while (name != "NoName" || number != 0)
-    {
-        name = GetName();
-        number = GetNumber();
-        names.push_back(name);
-        scores.push_back(number);
-    }
-
     std::cout << "-------------------------- \n";
     for (int i = 0; i < names.size(); ++i)
     {
@@ -63,13 +23,78 @@ int main()
             {
                 std::cout << "Ім'я " << names[i] << " повторюється \n";
             }
-        }     
-    } 
+        }
+    }
     std::cout << "-------------------------- \n";
 
-    for (int i = 0; i < names.size()-1; ++i)
+    for (int i = 0; i < names.size(); ++i)
     {
         std::cout << names[i] << "\t" << scores[i] << "\n";
     }
+}
+//тестова функція
+//приймає 1 введене значення імені  і рахунку
+//тому що немає окремої функції прийому значень
+//тому що не розібрався як з неї повернути 2 вектори
+void test_data_one (std::vector<std::string> names, std::vector<double> scores) 
+{
+//    names.clear(); //не очищаю тому що 1 введення потрібно провести з main
+//    scores.clear();
+    std::string name = " ";
+    double number = 1;
+
+    std::stringstream stream;
+    stream << "dd" << " " << "1" << "\n" << "ee" << " "
+    << "3" << "\n" << "NoName" << " " << "0" << "\n";
+        stream >> name >> number; //чомусь не виводить з потоку 'ee' i '3', можливо мало змінних?
+        names.push_back(name);
+        scores.push_back(number);
+//    read_data (names, scores, stream);
+
+    print_results(names, scores);
+
+    assertm( 2 == names.size(), "Names size 2 expected");
+    assertm( 2 == scores.size(), "Scores size 2 expected");
+
+    std::cout << "Test [" << __FUNCTION__ << "] PASSED\n";
+}
+
+int main()
+{
+   
+    std::string name = " ";
+    std::string line;
+    double number = 1;
+    std::stringstream stream;
+    std::vector<std::string> names;
+    std::vector<double> scores;
+
+    for (int i = 0; i < std::numeric_limits<double>::max(); ++i)
+//    while (std::getline(stream, line))
+    {
+        std::cout << "Введіть ім'я та рахунок: \n";
+        std::cout << "Для виходу введіть 'NoName 0' \n";
+        std::getline(std::cin, line);
+        stream << line << std::endl;  
+        stream >> name >> number;        
+        if (stream.fail())  //якщо попереднє введене значення не вдале
+        {
+			std::cout << "Введене не коректне значення, спробуйте знову. \n";
+            stream.clear();
+            stream.str(std::string());
+            continue;
+        }
+        if ("NoName" == name && 0 == number)
+        {
+            break;
+        }
+        names.push_back(name);
+        scores.push_back(number);
+    }
+//зняти слеші щоб працювала тестова функція
+//для тесту ввести одне значення імені і рахунку потім 'NoName 0'
+//    test_data_one (names, scores); 
+    print_results(names, scores);
+
 	return 0;	
 }
