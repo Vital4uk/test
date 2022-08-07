@@ -12,7 +12,7 @@
 
 //Функція друку результатів роботи програми
 //приймає вектори імен і рахунків
-void print_results(std::vector<std::string> names, std::vector<double> scores) 
+void print_results(std::vector<std::string> names, std::vector<int> scores) 
 {
     std::cout << "-------------------------- \n";
     for (int i = 0; i < names.size(); ++i)
@@ -32,16 +32,36 @@ void print_results(std::vector<std::string> names, std::vector<double> scores)
         std::cout << names[i] << "\t" << scores[i] << "\n";
     }
 }
+
+//функція для виводу значення імен, що мають введений рахунок
+//приймає введений рахунок і вектори раніше введених імен і рахунків
+void print_name (int number, std::vector<std::string> names, std::vector<int> scores)
+{
+    int count = 0;
+    for (int i = 0; i < scores.size(); ++i)
+    {
+        if (number == scores[i])        
+        {
+            std::cout << names[i] << "\t" << scores[i] << "\n";
+            ++count;
+        }
+    }        
+    if (count == 0)
+    {    
+        std::cout << "Немає студентів з таким рахунком. \n";
+    }
+}
+
 //тестова функція
 //приймає 1 введене значення імені  і рахунку
 //тому що немає окремої функції прийому значень
 //тому що не розібрався як з неї повернути 2 вектори
-void test_data_one (std::vector<std::string> names, std::vector<double> scores) 
+void test_data_one (std::vector<std::string> names, std::vector<int> scores) 
 {
 //    names.clear(); //не очищаю тому що 1 введення потрібно провести з main
 //    scores.clear();
     std::string name = " ";
-    double number = 1;
+    int number = 1;
 
     std::stringstream stream;
     stream << "dd" << " " << "1" << "\n" << "ee" << " "
@@ -64,10 +84,10 @@ int main()
    
     std::string name = " ";
     std::string line;
-    double number = 1;
+    int number = 1;
     std::stringstream stream;
     std::vector<std::string> names;
-    std::vector<double> scores;
+    std::vector<int> scores;
 
     for (int i = 0; i < std::numeric_limits<double>::max(); ++i)
 //    while (std::getline(stream, line))
@@ -96,5 +116,8 @@ int main()
 //    test_data_one (names, scores); 
     print_results(names, scores);
 
-	return 0;	
+    std::cout << "Введіть рахунок для виводу імен, що його мають: \n";
+    std::cin >> number;
+    print_name(number, names, scores);
+    return 0;	
 }

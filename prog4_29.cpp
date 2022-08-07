@@ -32,6 +32,27 @@ void print_results(std::vector<std::string> names, std::vector<double> scores)
         std::cout << names[i] << "\t" << scores[i] << "\n";
     }
 }
+
+//функція для виводу значення рахунку введеного імені
+//приймає введене ім'я і вектори раніше введених імен і рахунків
+void print_score (std::string name, std::vector<std::string> names, std::vector<double> scores)
+{
+    int count = 0;
+    for (int i = 0; i < names.size(); ++i)
+    {
+//        if (name == names[i] && 0 == count) //якщо ім'я необхідно буде вивести тільки один раз
+        if (name == names[i])        
+        {
+            std::cout << names[i] << "\t" << scores[i] << "\n";
+            ++count;
+        }
+    }        
+    if (count == 0)
+    {    
+        std::cout << "Таке ім'я не знайдене. \n";
+    }
+}
+
 //тестова функція
 //приймає 1 введене значення імені  і рахунку
 //тому що немає окремої функції прийому значень
@@ -96,5 +117,8 @@ int main()
 //    test_data_one (names, scores); 
     print_results(names, scores);
 
-	return 0;	
+    std::cout << "Введіть ім'я для виводу його рахунку: \n";
+    std::cin >> name;
+    print_score(name, names, scores);
+    return 0;	
 }
