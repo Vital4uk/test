@@ -3,16 +3,16 @@
 //вивдодить список введених імен і рахунків
 #include <iostream>
 #include <vector>
-#include <cassert>
-#include <sstream>
-#include <limits>
+#include <cassert> //підключає assertm
+#include <sstream> //підключає std::stringstream
+#include <utility> //підключає std::pair
 
 // Use (void) to silence unused warnings.
 #define assertm(exp, msg) assert(((void)msg, exp))
 
 //Функція друку результатів роботи програми
 //приймає вектори імен і рахунків
-void print_results(std::vector<std::string> names, std::vector<double> scores) 
+void print_results (std::vector<std::string> names, std::vector<double> scores) 
 {
     std::cout << "-------------------------- \n";
     for (int i = 0; i < names.size(); ++i)
@@ -32,36 +32,60 @@ void print_results(std::vector<std::string> names, std::vector<double> scores)
         std::cout << names[i] << "\t" << scores[i] << "\n";
     }
 }
-//тестова функція
-//приймає 1 введене значення імені  і рахунку
-//тому що немає окремої функції прийому значень
-//тому що не розібрався як з неї повернути 2 вектори
-void test_data_one (std::vector<std::string> names, std::vector<double> scores) 
+
+std::pair <std::vector <std::string>, std::vector<double>> read_data (std::istream &stream = std::cin)
 {
-//    names.clear(); //не очищаю тому що 1 введення потрібно провести з main
-//    scores.clear();
-    std::string name = " ";
-    double number = 1;
+    std::vector< std::string > names;
+    std::vector< double > scores;
+    std::cout << "Введіть ім'я та рахунок: \n";
+    std::cout << "Для виходу введіть 'NoName 0' \n";
+    std::string line;
+    while ( std::getline(stream, line ) )
+    {
+        std::stringstream string_stream{ line };
+        std::string name;
+        string_stream >> name;
+        double number{ 0.0 };
+        string_stream >> number;
+        if ( string_stream.fail( ) ) //якщо попереднє введене значення не вдале
+        {
+            std::cout << "Введене не коректне значення, спробуйте знову. \n";
+            continue;
+        }
+        if ( "NoName" == name && 0 == number )
+        {
+            break;
+        }
 
+        std::cout << "name :" << name << "  "
+              << "nuber :" << number << std::endl;
+        names.push_back( name );
+        scores.push_back( number );
+        }
+    return { names, scores };
+}
+
+//тестова функція
+//імітує введення двох імен і рахунків та закінчення вводу
+//тестує чи правильно працює функція read_data() в частині розміру 
+//масиву введених значень
+void test_data_one( ) 
+{
     std::stringstream stream;
-    stream << "dd" << " " << "1" << "\n" << "ee" << " "
+    stream << "dd" << " " << "1" << "\n" << "ee" << " " 
     << "3" << "\n" << "NoName" << " " << "0" << "\n";
-        stream >> name >> number; //чомусь не виводить з потоку 'ee' i '3', можливо мало змінних?
-        names.push_back(name);
-        scores.push_back(number);
-//    read_data (names, scores, stream);
 
-    print_results(names, scores);
+    std::pair<std::vector<std::string>,std::vector<double>> test = read_data (stream);
+    print_results(test.first, test.second);
 
-    assertm( 2 == names.size(), "Names size 2 expected");
-    assertm( 2 == scores.size(), "Scores size 2 expected");
+    assertm( 2 == test.first.size(), "Names size 2 expected");
+    assertm( 2 == test.second.size(), "Scores size 2 expected");
 
     std::cout << "Test [" << __FUNCTION__ << "] PASSED\n";
 }
 
 int main()
 {
-   
     std::string name = " ";
     std::string line;
     double number = 1;
@@ -69,32 +93,13 @@ int main()
     std::vector<std::string> names;
     std::vector<double> scores;
 
-    for (int i = 0; i < std::numeric_limits<double>::max(); ++i)
-//    while (std::getline(stream, line))
-    {
-        std::cout << "Введіть ім'я та рахунок: \n";
-        std::cout << "Для виходу введіть 'NoName 0' \n";
-        std::getline(std::cin, line);
-        stream << line << std::endl;  
-        stream >> name >> number;        
-        if (stream.fail())  //якщо попереднє введене значення не вдале
-        {
-			std::cout << "Введене не коректне значення, спробуйте знову. \n";
-            stream.clear();
-            stream.str(std::string());
-            continue;
-        }
-        if ("NoName" == name && 0 == number)
-        {
-            break;
-        }
-        names.push_back(name);
-        scores.push_back(number);
-    }
-//зняти слеші щоб працювала тестова функція
-//для тесту ввести одне значення імені і рахунку потім 'NoName 0'
-//    test_data_one (names, scores); 
-    print_results(names, scores);
+//зняти слеші з test_data_one () і заслешити дві наступні строчки read_data() i print_rezult()
+//щоб працювала тестова функція
+//    test_data_one (); 
+
+    //std::pair може зберігати два різні вектори в одному (об'єкті)    
+    std::pair<std::vector<std::string>,std::vector<double>> result = read_data();
+    print_results(result.first, result.second);
 
 	return 0;	
 }
