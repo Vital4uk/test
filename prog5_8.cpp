@@ -150,6 +150,41 @@ void read_data( std::vector< int >& numbers, std::istream &stream = std::cin)
 //    return numbers;
 }
 
+void read_data_2( std::vector< int >& numbers, std::istream &stream = std::cin)
+{
+    for (;;)
+    {
+        std::size_t pos{};
+        std::string number_str;
+        stream >> number_str;
+
+        if ("|" == number_str) {
+            return;
+        }
+        try
+        {
+            std::cout << "std::stoi('" << number_str << "'): ";
+            const int number {std::stoi(number_str, &pos)};
+            // std::cout << number << "; pos: " << pos << '\n';
+            if (pos != number_str.size()) {
+                throw std::invalid_argument(number_str);
+            }
+            numbers.push_back(number);
+        }   
+        catch(std::invalid_argument const& ex)
+        {
+            std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
+            // numbers.clear();
+            // return;
+        }
+        catch(std::out_of_range const& ex)
+        {
+            std::cout << "std::out_of_range::what(): " << ex.what() << '\n';
+        }
+    }
+
+}
+
 //функція підрахунку вказаної суми чисел
 //приймає кількість чисел що сумуються і вектор з необхідними числами
 //повертає суму чисел
@@ -208,7 +243,7 @@ int main()
     
     int number_for_sum = get_number();
     std::vector< int > numbers;
-    read_data( numbers );
+    read_data_2( numbers );
 
     std::cout << number_for_sum << '\n';
     for( int i = 0; i < numbers.size(); ++i) {
