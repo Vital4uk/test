@@ -6,7 +6,7 @@
 #include <vector>
 #include <cassert> //підключає assertm
 #include <sstream> //підключає std::stringstream
-//#include <string> //викликає функцію stoi
+#include <string> //викликає функцію stoi
 
 // Use (void) to silence unused warnings.
 #define assertm(exp, msg) assert(((void)msg, exp))
@@ -21,6 +21,7 @@ int get_number()
 		std::cout << "Введіть кількість значень що додаються: \n";
 		int number = 0;
        		std::cin >> number;
+            std::cin.ignore( 32767, '\n');
 		if (std::cin.fail())	//якщо попереднє введене значення не вдале
 		{
 			std::cin.clear(); //повертаємо cin в звичайний режи роботи
@@ -39,9 +40,13 @@ int get_number()
 //повертає вектор з цілими числами
 void read_data( std::vector< int >& numbers, std::istream &stream = std::cin)
 {
+    std::string num;
+    std::string symbol;
     std::string temp;
-    int count = 0;
-    std::stringstream ss;
+    std::string inappropriate_symbols;
+//    std::string temp2;
+//    int count = 0;
+//    std::stringstream ss;
     int number = 0;
     std::cout << "Введіть декілька цілих чисел ('|' для виходу) \n";
     std::string line;
@@ -50,18 +55,64 @@ void read_data( std::vector< int >& numbers, std::istream &stream = std::cin)
     while ( std::getline(stream, line ) )
     {
         std::stringstream string_stream{ line };
+//            symbol = string_stream.peek();
+//            std::cout << symbol << '\n';
+//            if( stoi( symbol ) ) {
+//                number = stoi ( symbol );
+//            }
+//            std::cout << number << '\n';
 
-        //цикл рахує кількість символів
-        while( string_stream >> temp ) {
-            if( "|" == temp) { break; }
-            ++count;
-//            number = stoi( temp );
-//            numbers.push_back( number );
-            ss << temp + " ";
-        }
+        //цикл рахує кількість символі
+//        while( string_stream >> temp ) {
+//            if( "|" == temp) { break; }
+//           ++count;
+//    //        number = stoi( temp );
+//    //        numbers.push_back( number );
+//            ss << temp + " ";
+//        }
+        
+//        while( "|" != symbol ) {
+        for( int i = 0; i < line.size(); ++i) {            
+            symbol = string_stream.peek();
+//            std::cout << symbol << '\n';
+            
+            try {
+                stoi( symbol );
+                num += string_stream.get(); 
+                std::cout << num << '\n';
+            }
+            catch( std::invalid_argument ex) {
+                std::cout << symbol << " invalid_argument " << ex.what() << '\n';
+                temp = string_stream.get(); //костиль
+                if( " " != temp && "|" != temp ) { inappropriate_symbols += temp; }
+                std::cout << temp << '\n';
+//                symbol = string_stream.peek();
+//                while( " " != symbol || "|" != symbol ) {
+//                    temp = string_stream.get();
+//                    symbol = string_stream.peek();
+//                }
+//               num = {};
+            }
 
-//    std::cout << "-----------------\n";
-//        std::cout << count << '\n';
+//            try { 
+//                stoi( num ); 
+            
+            if( " " == symbol || "\n" == symbol || "|" == symbol ) { 
+                number = stoi( num );
+                std::cout << "-----------------\n";
+                std::cout << number << '\n';
+                numbers.push_back( number );
+//                temp = string_stream.get();
+                num = {};
+            }
+//            }
+//            catch( std::out_of_range ) {
+//                std::cout << num << " out_of_range" << '\n';
+//                temp2 = num;
+//            }
+            if( "|" == symbol ) { break; }
+        }        
+
 
 //        std::cout << string_stream.str() << '\n';
 //        std::cout << ss.str() << '\n';
@@ -71,16 +122,16 @@ void read_data( std::vector< int >& numbers, std::istream &stream = std::cin)
 //        }
 //    std::cout << "-----------------\n";
     
-        for( int i = numbers.size(); i < count; ++i ) {
-            ss >> number;
-            if( ss.fail() ) {
-                std::cout << "Fail \n"; 
+//        for( int i = numbers.size(); i < count; ++i ) {
+//            ss >> number;
+//            if( ss.fail() ) {
+//                std::cout << "Fail \n"; 
 //                ss.setstate(std::ios_base::goodbit);
 //                continue; 
-            }
-            else { numbers.push_back( number ); 
-            }
-        }
+//            }
+//          else { numbers.push_back( number ); 
+//            }
+//        }
         
 //        if( string_stream.fail( ) ) //якщо попереднє введене значення не вдале
 //        {
@@ -88,10 +139,14 @@ void read_data( std::vector< int >& numbers, std::istream &stream = std::cin)
 //            continue;
 //        }
 
-        if( "|" == temp) { break; }
+//        if( "|" == temp) { break; }
+        if( "|" == symbol) { break; }
     }
 
-//    std::cout << "-----------------\n";
+    if( inappropriate_symbols.size() != 0 ) {
+        std::cout << "Введені значення: " << inappropriate_symbols << " проігноровані, оскільки не є числами" << '\n';
+    }
+//    std::cout << "Число: " << temp2 << " завелике" << '\n';
 //    return numbers;
 }
 
@@ -112,7 +167,13 @@ int calculation( int number_for_sum, std::vector< int > numbers ) {
 //приймає кількість числел що сумуються, вектор чисел і значення суми цих чисел
 void print_results( int number_for_sum, std::vector< int > numbers, int sum ) 
 {
-    if( 0 == sum ) {
+    if( 0 > number_for_sum ) {
+        std::cout << "Ви хочете просумувати від'ємну кількість чисел" << '\n';
+    } 
+    else if( 0 == number_for_sum ) {
+        std::cout << "Ви хочете просумувати нульову кількість значень" << '\n';
+    }
+    else if( numbers.size() < number_for_sum ) {
         std::cout << "Ви хочете просумувати більше значень, ніж введено" << '\n';
     }
     else {
@@ -149,10 +210,10 @@ int main()
     std::vector< int > numbers;
     read_data( numbers );
 
-//    std::cout << number_for_sum << '\n';
-//    for( int i = 0; i < numbers.size(); ++i) {
-//        std::cout << numbers[i] << '\n';
-//    }
+    std::cout << number_for_sum << '\n';
+    for( int i = 0; i < numbers.size(); ++i) {
+        std::cout << numbers[i] << '\n';
+    }
 //    std::cout << "-----------------\n";
     
     int sum = calculation( number_for_sum, numbers );
