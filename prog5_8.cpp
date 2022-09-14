@@ -38,40 +38,20 @@ int get_number()
 //функція вводу чисел
 //приймає потік вхідних чисел
 //повертає вектор з цілими числами
+//перебирає посимвольно строку, не працює до кінця правильно
 void read_data( std::vector< int >& numbers, std::istream &stream = std::cin)
 {
     std::string num;
     std::string symbol;
     std::string temp;
     std::string inappropriate_symbols;
-//    std::string temp2;
-//    int count = 0;
-//    std::stringstream ss;
     int number = 0;
     std::cout << "Введіть декілька цілих чисел ('|' для виходу) \n";
     std::string line;
-//    std::getline( stream, line );
 
     while ( std::getline(stream, line ) )
     {
         std::stringstream string_stream{ line };
-//            symbol = string_stream.peek();
-//            std::cout << symbol << '\n';
-//            if( stoi( symbol ) ) {
-//                number = stoi ( symbol );
-//            }
-//            std::cout << number << '\n';
-
-        //цикл рахує кількість символі
-//        while( string_stream >> temp ) {
-//            if( "|" == temp) { break; }
-//           ++count;
-//    //        number = stoi( temp );
-//    //        numbers.push_back( number );
-//            ss << temp + " ";
-//        }
-        
-//        while( "|" != symbol ) {
         for( int i = 0; i < line.size(); ++i) {            
             symbol = string_stream.peek();
 //            std::cout << symbol << '\n';
@@ -93,9 +73,6 @@ void read_data( std::vector< int >& numbers, std::istream &stream = std::cin)
 //                }
 //               num = {};
             }
-
-//            try { 
-//                stoi( num ); 
             
             if( " " == symbol || "\n" == symbol || "|" == symbol ) { 
                 number = stoi( num );
@@ -108,48 +85,49 @@ void read_data( std::vector< int >& numbers, std::istream &stream = std::cin)
 //            }
 //            catch( std::out_of_range ) {
 //                std::cout << num << " out_of_range" << '\n';
-//                temp2 = num;
 //            }
             if( "|" == symbol ) { break; }
         }        
-
-
-//        std::cout << string_stream.str() << '\n';
-//        std::cout << ss.str() << '\n';
-
-//        while( ss >> number ) {
-//            numbers.push_back( number );
-//        }
-//    std::cout << "-----------------\n";
-    
-//        for( int i = numbers.size(); i < count; ++i ) {
-//            ss >> number;
-//            if( ss.fail() ) {
-//                std::cout << "Fail \n"; 
-//                ss.setstate(std::ios_base::goodbit);
-//                continue; 
-//            }
-//          else { numbers.push_back( number ); 
-//            }
-//        }
-        
-//        if( string_stream.fail( ) ) //якщо попереднє введене значення не вдале
-//        {
-//            std::cout << "Введене не коректне значення, спробуйте знову. \n";
-//            continue;
-//        }
-
-//        if( "|" == temp) { break; }
         if( "|" == symbol) { break; }
     }
 
     if( inappropriate_symbols.size() != 0 ) {
         std::cout << "Введені значення: " << inappropriate_symbols << " проігноровані, оскільки не є числами" << '\n';
     }
-//    std::cout << "Число: " << temp2 << " завелике" << '\n';
-//    return numbers;
 }
 
+//функція вводу чисел
+//приймає потік вхідних чисел
+//повертає вектор з цілими числами
+void read_data_3( std::vector< int >& numbers, std::istream &stream = std::cin) {
+    std::size_t pos{};
+    std::string number_str;
+    std::cout << "Введіть декілька цілих чисел ('|' для виходу) \n";
+    
+    for(;;) {
+        stream >> number_str;
+            if ("|" == number_str) {
+                return;
+            }
+    
+        try {
+            const int number {std::stoi(number_str, &pos)};
+            if (pos != number_str.size()) {
+                throw std::invalid_argument(number_str);
+            }
+            numbers.push_back(number);
+        }
+        catch(std::invalid_argument const& ex) {
+            std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
+        }
+        catch(std::out_of_range const& ex) {
+            std::cout << "std::out_of_range::what(): " << ex.what() << '\n';
+        }
+    }
+}
+
+//твій варіант сходу так і не працює
+//не розумію чому
 void read_data_2( std::vector< int >& numbers, std::istream &stream = std::cin)
 {
     for (;;)
@@ -243,12 +221,12 @@ int main()
     
     int number_for_sum = get_number();
     std::vector< int > numbers;
-    read_data_2( numbers );
+    read_data_3( numbers );
 
-    std::cout << number_for_sum << '\n';
-    for( int i = 0; i < numbers.size(); ++i) {
-        std::cout << numbers[i] << '\n';
-    }
+//    std::cout << number_for_sum << '\n';
+//    for( int i = 0; i < numbers.size(); ++i) {
+//        std::cout << numbers[i] << '\n';
+//    }
 //    std::cout << "-----------------\n";
     
     int sum = calculation( number_for_sum, numbers );
