@@ -1,7 +1,6 @@
 //програма приймає значення кількості чисел що необхідно просумувати
 //і значення які необхідно просумувати
 //вивдодить введені значення і суму
-//програма не допрацьована до кінця, тому присутні частини коду, що на разі не використовуюється
 #include <iostream>
 #include <vector>
 #include <cassert> //підключає assertm
@@ -24,7 +23,7 @@ int get_number()
             std::cin.ignore( 32767, '\n');
 		if (std::cin.fail())	//якщо попереднє введене значення не вдале
 		{
-			std::cin.clear(); //повертаємо cin в звичайний режи роботи
+			std::cin.clear(); //повертаємо cin в звичайний режим роботи
 			std::cin.ignore(32767, '\n'); //і видаляємо значення попереднього вводу
 			std::cout << "Введене не коректне значення, спробуйте знову. \n";			      //і вхідного буфера
 		}
@@ -34,67 +33,6 @@ int get_number()
 		}
 	}
 }	
-
-//функція вводу чисел
-//приймає потік вхідних чисел
-//повертає вектор з цілими числами
-//перебирає посимвольно строку, не працює до кінця правильно
-void read_data( std::vector< int >& numbers, std::istream &stream = std::cin)
-{
-    std::string num;
-    std::string symbol;
-    std::string temp;
-    std::string inappropriate_symbols;
-    int number = 0;
-    std::cout << "Введіть декілька цілих чисел ('|' для виходу) \n";
-    std::string line;
-
-    while ( std::getline(stream, line ) )
-    {
-        std::stringstream string_stream{ line };
-        for( int i = 0; i < line.size(); ++i) {            
-            symbol = string_stream.peek();
-//            std::cout << symbol << '\n';
-            
-            try {
-                stoi( symbol );
-                num += string_stream.get(); 
-                std::cout << num << '\n';
-            }
-            catch( std::invalid_argument ex) {
-                std::cout << symbol << " invalid_argument " << ex.what() << '\n';
-                temp = string_stream.get(); //костиль
-                if( " " != temp && "|" != temp ) { inappropriate_symbols += temp; }
-                std::cout << temp << '\n';
-//                symbol = string_stream.peek();
-//                while( " " != symbol || "|" != symbol ) {
-//                    temp = string_stream.get();
-//                    symbol = string_stream.peek();
-//                }
-//               num = {};
-            }
-            
-            if( " " == symbol || "\n" == symbol || "|" == symbol ) { 
-                number = stoi( num );
-                std::cout << "-----------------\n";
-                std::cout << number << '\n';
-                numbers.push_back( number );
-//                temp = string_stream.get();
-                num = {};
-            }
-//            }
-//            catch( std::out_of_range ) {
-//                std::cout << num << " out_of_range" << '\n';
-//            }
-            if( "|" == symbol ) { break; }
-        }        
-        if( "|" == symbol) { break; }
-    }
-
-    if( inappropriate_symbols.size() != 0 ) {
-        std::cout << "Введені значення: " << inappropriate_symbols << " проігноровані, оскільки не є числами" << '\n';
-    }
-}
 
 //функція вводу чисел
 //приймає потік вхідних чисел
@@ -160,7 +98,6 @@ void read_data_2( std::vector< int >& numbers, std::istream &stream = std::cin)
             std::cout << "std::out_of_range::what(): " << ex.what() << '\n';
         }
     }
-
 }
 
 //функція підрахунку вказаної суми чисел
@@ -199,38 +136,36 @@ void print_results( int number_for_sum, std::vector< int > numbers, int sum )
 }
 
 //тестова функція
-//з попередньої програми
-void test_data_one( ) 
+void test_data_one( std::vector< int >& numbers ) 
 {
-//    std::stringstream stream;
-//    stream << "dd" << " " << "1" << "\n" << "ee" << " " 
-//    << "3" << "\n" << "NoName" << " " << "0" << "\n";
-//
-//    std::pair<std::vector<std::string>,std::vector<double>> test = read_data (stream);
-//    print_results(test.first, test.second);
-//
-//    assertm( 2 == test.first.size(), "Names size 2 expected");
-//    assertm( 2 == test.second.size(), "Scores size 2 expected");
-//
-//   std::cout << "Test [" << __FUNCTION__ << "] PASSED\n";
+    int number_for_sum = 2;
+    std::stringstream stream;
+    stream << "4" << " " << "45r" << "\n" << "ee" << " " 
+    << "6" << "\n" << "7" << " " << "|" << "\n";
+
+    std::vector< int > test;
+    read_data_3 ( numbers, stream );
+    test = numbers;
+    int sum = calculation( number_for_sum, test );
+    print_results( number_for_sum, test, sum );
+
+    assertm( 3 == test.size(), "Numbers size 3 expected");
+
+    std::cout << "Test [" << __FUNCTION__ << "] PASSED\n";
 }
 
 int main()
 {
-//    test_data_one(); 
-    
-    int number_for_sum = get_number();
+//    для звичайної роботи програми зняти коментарі з строчок 162, 164, 168, 169
+//    і закоментити строчку 166
+//    int number_for_sum = get_number();
     std::vector< int > numbers;
-    read_data_3( numbers );
+//    read_data_3( numbers );
 
-//    std::cout << number_for_sum << '\n';
-//    for( int i = 0; i < numbers.size(); ++i) {
-//        std::cout << numbers[i] << '\n';
-//    }
-//    std::cout << "-----------------\n";
-    
-    int sum = calculation( number_for_sum, numbers );
-    print_results( number_for_sum, numbers, sum );
+    test_data_one( numbers ); 
+
+//    int sum = calculation( number_for_sum, numbers );
+//    print_results( number_for_sum, numbers, sum );
 
 	return 0;	
 }
