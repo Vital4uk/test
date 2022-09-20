@@ -36,8 +36,8 @@ int get_number()
 
 //функція вводу чисел
 //приймає потік вхідних чисел
-//повертає вектор з цілими числами
-void read_data_3( std::vector< int >& numbers, std::istream &stream = std::cin) {
+//повертає вектор з числами
+void read_data( std::vector< double >& numbers, std::istream &stream = std::cin) {
     std::size_t pos{};
     std::string number_str;
     std::cout << "Введіть декілька цілих чисел ('|' для виходу) \n";
@@ -49,7 +49,9 @@ void read_data_3( std::vector< int >& numbers, std::istream &stream = std::cin) 
             }
     
         try {
-            const int number {std::stoi(number_str, &pos)};
+            //тут проблема з типом double
+            //потрібно глянути як переводити string в double
+            const double number {std::stod(number_str, &pos)};
             if (pos != number_str.size()) {
                 throw std::invalid_argument(number_str);
             }
@@ -64,50 +66,20 @@ void read_data_3( std::vector< int >& numbers, std::istream &stream = std::cin) 
     }
 }
 
-//твій варіант сходу так і не працює
-//не розумію чому
-void read_data_2( std::vector< int >& numbers, std::istream &stream = std::cin)
-{
-    for (;;)
-    {
-        std::size_t pos{};
-        std::string number_str;
-        stream >> number_str;
-
-        if ("|" == number_str) {
-            return;
-        }
-        try
-        {
-            std::cout << "std::stoi('" << number_str << "'): ";
-            const int number {std::stoi(number_str, &pos)};
-            // std::cout << number << "; pos: " << pos << '\n';
-            if (pos != number_str.size()) {
-                throw std::invalid_argument(number_str);
-            }
-            numbers.push_back(number);
-        }   
-        catch(std::invalid_argument const& ex)
-        {
-            std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
-            // numbers.clear();
-            // return;
-        }
-        catch(std::out_of_range const& ex)
-        {
-            std::cout << "std::out_of_range::what(): " << ex.what() << '\n';
-        }
-    }
-}
-
 //функція підрахунку вказаної суми чисел
 //приймає кількість чисел що сумуються і вектор з необхідними числами
 //повертає суму чисел
-int calculation( int number_for_sum, std::vector< int > numbers ) {
-    int sum = 0;
+double calculation( int number_for_sum, std::vector< double > numbers, std::vector< double >& real_numbers ) {
+    double sum = 0;
     if( number_for_sum <= numbers.size() ) {
         for( int i = 0; i < number_for_sum; ++i) {
             sum += numbers[i];
+        }
+    }
+    
+    if( numbers.size() > 1 ) {
+        for( int i = 0; i < numbers.size()-1; ++i ) {
+            real_numbers.push_back( numbers[i]-numbers[i+1] );
         }
     }
     return sum; 
@@ -115,13 +87,16 @@ int calculation( int number_for_sum, std::vector< int > numbers ) {
 
 //Функція друку результатів роботи програми
 //приймає кількість числел що сумуються, вектор чисел і значення суми цих чисел
-void print_results( int number_for_sum, std::vector< int > numbers, int sum ) 
+void print_results( int number_for_sum, std::vector< double > numbers, double sum, std::vector< double > real_numbers ) 
 {
     if( 0 > number_for_sum ) {
         std::cout << "Ви хочете просумувати від'ємну кількість чисел" << '\n';
     } 
     else if( 0 == number_for_sum ) {
         std::cout << "Ви хочете просумувати нульову кількість значень" << '\n';
+    }
+    else if( 1 == number_for_sum ) {
+        std::cout << "Ви хочете просумувати лише одне значення" << '\n';
     }
     else if( numbers.size() < number_for_sum ) {
         std::cout << "Ви хочете просумувати більше значень, ніж введено" << '\n';
@@ -133,39 +108,56 @@ void print_results( int number_for_sum, std::vector< int > numbers, int sum )
         }
         std::cout << ") дорівнює " << sum << '\n'; 
     }
+
+    switch( numbers.size() ) {
+        case 0:
+            std::cout << "Ви не ввели жодного дійсного числа." << '\n'; 
+            break;
+        case 1:
+            std::cout << "Ви ввели одне дійсне число. " <<  
+                "Цього недостатньо для визначення різниці дійсних чисел." << '\n'; 
+            break;
+        default: 
+            std::cout << "Різниці між сусідніми введеними числами: " << '\n'; 
+            for( double x : real_numbers) {
+                std::cout << x << '\n';
+            }
+            break;
+    }
 }
 
 //тестова функція
-void test_data_one( std::vector< int >& numbers ) 
+void test_data_one( std::vector< double >& numbers, std::vector< double >& real_numbers ) 
 {
     int number_for_sum = 2;
     std::stringstream stream;
-    stream << "4" << " " << "45r" << "\n" << "ee" << " " 
-    << "6" << "\n" << "7" << " " << "|" << "\n";
+    stream << "4.5" << " " << "45r" << "\n" << "5.ee" << " " 
+    << "6" << "\n" << "0.5" << " " << "|" << "\n";
 
-    std::vector< int > test;
-    read_data_3 ( numbers, stream );
+    std::vector< double > test;
+    read_data ( numbers, stream );
     test = numbers;
-    int sum = calculation( number_for_sum, test );
-    print_results( number_for_sum, test, sum );
+    double sum = calculation( number_for_sum, test, real_numbers );
+    print_results( number_for_sum, test, sum, real_numbers );
 
     assertm( 3 == test.size(), "Numbers size 3 expected");
+    assertm( 2 == real_numbers.size(), "Real_numbers size 2 expected");
 
     std::cout << "Test [" << __FUNCTION__ << "] PASSED\n";
 }
 
 int main()
 {
-//    для звичайної роботи програми зняти коментарі з строчок 162, 164, 168, 169
-//    і закоментити строчку 166
-//    int number_for_sum = get_number();
-    std::vector< int > numbers;
-//    read_data_3( numbers );
+    int number_for_sum = get_number();
+    std::vector< double > numbers;
+    std::vector< double > real_numbers;
+    read_data( numbers );
+//    для коректного запуску тестової функції закоментити рядки
+//    151, 154, 159, 160  
+//    test_data_one( numbers, real_numbers ); 
 
-    test_data_one( numbers ); 
-
-//    int sum = calculation( number_for_sum, numbers );
-//    print_results( number_for_sum, numbers, sum );
+    double sum = calculation( number_for_sum, numbers, real_numbers );
+    print_results( number_for_sum, numbers, sum, real_numbers );
 
 	return 0;	
 }
