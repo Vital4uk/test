@@ -39,7 +39,8 @@ int get_number( std::istream &stream = std::cin )
             {
                 throw std::invalid_argument( "Out of range 0-9" );
             }
-           return number;
+            stream.ignore(32767,'\n'); //забирає лишні введені символи
+            return number;
         }
         catch(std::invalid_argument const& ex) {
             std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
@@ -183,12 +184,12 @@ void compare_numbers( const std::vector< int >& mystery_numbers, const std::vect
 //функція виводу результатів порівняння
 void print_results( const std::vector< int >& mystery_numbers, const std::vector< int >& answer_numbers, int cows, int bulls )
 {
-    std::cout << "Загадані числа: \n";
-    for( auto x : mystery_numbers ) 
-    {
-       std::cout << x << '\t';
-    }
-    std::cout << '\n';
+//    std::cout << "Загадані числа: \n";
+//    for( auto x : mystery_numbers ) 
+//    {
+//       std::cout << x << '\t';
+//    }
+//    std::cout << '\n';
     std::cout << "Введені числа: \n";
     for( auto y : answer_numbers ) 
     {
