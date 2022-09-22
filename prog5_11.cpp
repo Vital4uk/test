@@ -128,6 +128,8 @@ begin_for_j:
 
 void get_answer_numbers_2( std::vector< int >& answer_numbers )
 {
+    answer_numbers.assign(4,255);
+    std::cout << '\n';
     for ( size_t index = 0u; index < answer_numbers.size(); )
     {
         std::cout << "Введіть число #" << index + 1 << "\n";
@@ -181,12 +183,12 @@ void compare_numbers( const std::vector< int >& mystery_numbers, const std::vect
 //функція виводу результатів порівняння
 void print_results( const std::vector< int >& mystery_numbers, const std::vector< int >& answer_numbers, int cows, int bulls )
 {
-//    std::cout << "Загадані числа: \n";
-//    for( auto x : mystery_numbers ) 
-//    {
-//        std::cout << x << '\t';
-//    }
-//    std::cout << '\n';
+    std::cout << "Загадані числа: \n";
+    for( auto x : mystery_numbers ) 
+    {
+       std::cout << x << '\t';
+    }
+    std::cout << '\n';
     std::cout << "Введені числа: \n";
     for( auto y : answer_numbers ) 
     {
@@ -202,11 +204,12 @@ void print_results( const std::vector< int >& mystery_numbers, const std::vector
 int main ()
 {
     std::cout << "Вас вітає гра 'Бички і корови'.\n";
-    std::vector< int > mystery_numbers( 4 );
-    std::vector< int > answer_numbers( 4 );
+    std::vector< int > mystery_numbers( 4,-1 );
+    std::vector< int > answer_numbers( 4,-1 );
+    std::cout << '\n';
     int cows = 0;
     int bulls = 0;
-    get_mystery_numbers( mystery_numbers );
+    get_mystery_numbers_2( mystery_numbers );
     for(;;)
     {
         if( bulls == 4 )
@@ -220,7 +223,7 @@ int main ()
             std::cout << "Вітаємо, ви відгадали всі числа на своїх місцях і перемогли! \n";
             break;
         }
-        get_answer_numbers( answer_numbers );
+        get_answer_numbers_2( answer_numbers );
         compare_numbers( mystery_numbers, answer_numbers, cows, bulls );
         print_results( mystery_numbers, answer_numbers, cows, bulls );
     }
