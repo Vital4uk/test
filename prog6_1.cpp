@@ -20,6 +20,7 @@
 //#include "../std_lib_facilities.h"
 #include <iostream>
 
+
 //------------------------------------------------------------------------------
 
 class Token{
@@ -36,11 +37,11 @@ public:
 
 class Token_stream {
 public:
-    Token_stream();   // make a Token_stream that reads from cin
+//    Token_stream();   // make a Token_stream that reads from cin
     Token get();      // get a Token (get() is defined elsewhere)
     void putback(Token t);    // put a Token back
 private:
-    bool full;        // is there a Token in the buffer?
+    bool full {false};        // is there a Token in the buffer?
     Token buffer;     // here is where we keep a Token put back using putback()
 };
 
@@ -86,7 +87,7 @@ Token Token_stream::get()
         return Token(ch);        // let each character represent itself
     case '.':
     case '0': case '1': case '2': case '3': case '4':
-    case '5': case '6': case '7': case '9':
+    case '5': case '6': case '7': case '8': case '9':
     {
         std::cin.putback(ch);         // put digit back into the input stream
         double val;
@@ -118,7 +119,7 @@ double primary()
         double d = expression();
         t = ts.get();
         if (t.kind != ')')  throw std::runtime_error("')' expected");
-            return d;   //можливо помилка, не d
+            return d; 
     }
     case '8':            // we use '8' to represent a number
         return t.value;  // return the number's value
@@ -140,6 +141,7 @@ double term()
         case '*':
             left *= primary();
             t = ts.get();
+            break;
         case '/':
         {
             double d = primary();
@@ -170,7 +172,7 @@ double expression()
             t = ts.get();
             break;
         case '-':
-            left += term();    // evaluate Term and subtract
+            left -= term();    // evaluate Term and subtract
             t = ts.get();
             break;
         default:
@@ -185,8 +187,8 @@ double expression()
 int main()
 try
 {
-    while (std::cin) {
         double val = 0.0;
+    while (std::cin) {
         Token t = ts.get();
 
         if (t.kind == 'q') break; // 'q' for quit
@@ -199,7 +201,7 @@ try
 //    keep_window_open();
 }
 catch (std::exception& e) {
-    std:: cerr << "error: " << e.what() << '\n';
+    std::cerr << "error: " << e.what() << '\n';
 //    keep_window_open();
     return 1;
 }
