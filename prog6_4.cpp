@@ -10,13 +10,19 @@
 // Use (void) to silence unused warnings.
 #define assertm(exp, msg) assert(((void)msg, exp))
 
-class Name_value
+//class Name_value
+//{
+//public:
+//    std::string v_name;        // what name
+//    double value;            // for numbers: a value 
+//    Name_value( std::string name, double number )     // make a Token from a string and a double
+//        :v_name( name ), value( number ) { }
+//};
+
+struct Name_value
 {
-public:
-    std::string v_name;        // what name
-    double value;            // for numbers: a value 
-    Name_value( std::string name, double number )     // make a Token from a string and a double
-        :v_name( name ), value( number ) { }
+    std::string m_name;
+    double m_value;
 };
 
 std::vector< Name_value > read_data( std::istream &stream = std::cin )
@@ -45,7 +51,8 @@ std::vector< Name_value > read_data( std::istream &stream = std::cin )
 
         std::cout << "name :" << name << "  "
               << "nuber :" << number << std::endl;
-        names_scores.push_back( name, number );
+        names_scores.emplace_back( name, number );
+//        names_scores.push_back( name, number );
 //        names_scores.value.push_back( number );
     }
     return names_scores;
@@ -55,24 +62,28 @@ std::vector< Name_value > read_data( std::istream &stream = std::cin )
 //приймає вектори імен і рахунків
 void print_results( std::vector< Name_value > names_scores ) 
 {
-    std::cout << "-------------------------- \n";
-    for( int i = 0; i < names_scores.size(); ++i )
+//    std::cout << "-------------------------- \n";
+//    for( int i = 0; i < names_scores.size(); ++i )
+//    {
+//        for( int j = i + 1; j < names_scores.size(); ++j )
+//        {
+//            if( names_scores.v_name[i] == names_scores.v_name[j] )
+//            {
+//                std::cout << "Ім'я " << names_scores.v_name[i] << " повторюється \n";
+//            }
+//        }
+//    }
+//    std::cout << "-------------------------- \n";
+    for ( auto&& score : names_scores )
     {
-        for( int j = i + 1; j < names_scores.size(); ++j )
-        {
-            if( names_scores.v_name[i] == names_scores.v_name[j] )
-            {
-                std::cout << "Ім'я " << names_scores.v_name[i] << " повторюється \n";
-            }
-        }
+        std::cout << score.m_name << "\n";
     }
-    std::cout << "-------------------------- \n";
 
-    for( int i = 0; i < names_scores.size(); ++i )
-    {
+//    for( int i = 0; i < names_scores.size(); ++i )
+//    {
 //        std::cout << names_scores.name[i] << "\t" << names_scores.value[i] << "\n";
-        std::cout << names_scores[i] <<  "\n";
-    }
+//        std::cout << names_scores[i] <<  "\n";
+//    }
 }
 //тестова функція
 //імітує введення двох імен і рахунків та закінчення вводу
