@@ -5,33 +5,24 @@
 #include <vector>
 #include <cassert> //підключає assertm
 #include <sstream> //підключає std::stringstream
-#include <utility> //підключає std::pair
 
 // Use (void) to silence unused warnings.
 #define assertm(exp, msg) assert(((void)msg, exp))
 
-//class Name_value
-//{
-//public:
-//    std::string v_name;        // what name
-//    double value;            // for numbers: a value 
-//    Name_value( std::string name, double number )     // make a Token from a string and a double
-//        :v_name( name ), value( number ) { }
-//};
-
-struct Name_value
+class Name_value
 {
+public:
     std::string m_name;
     double m_value;
 };
 
-std::vector< Name_value > read_data( std::istream &stream = std::cin )
+//функція вводу значень імені та рахунку
+void read_data( std::vector< Name_value >& names_scores, std::istream &stream = std::cin )
 {
-    std::vector< Name_value > names_scores;
-//    std::vector< double > scores;
     std::cout << "Введіть ім'я та рахунок: \n";
     std::cout << "Для виходу введіть 'NoName 0' \n";
     std::string line;
+    Name_value temp;
     while ( std::getline(stream, line ) )
     {
         std::stringstream string_stream{ line };
@@ -51,70 +42,80 @@ std::vector< Name_value > read_data( std::istream &stream = std::cin )
 
         std::cout << "name :" << name << "  "
               << "nuber :" << number << std::endl;
-        names_scores.emplace_back( name, number );
-//        names_scores.push_back( name, number );
-//        names_scores.value.push_back( number );
+
+        temp.m_name = name;
+        temp.m_value = number;
+        names_scores.push_back( temp );
     }
-    return names_scores;
+}
+
+//функція порівнює введені імена на повторюваність
+void compare( std::vector< Name_value > names_scores )
+{
+    for( size_t i = 0u; i < names_scores.size(); ++i )
+    {
+        for( size_t j = i + 1; j < names_scores.size(); ++j )
+        {
+            if( names_scores[i].m_name == names_scores[j].m_name )
+            {
+                std::cout << "Ім'я " << names_scores[i].m_name << " повторюється \n";
+            }
+        }
+    }
 }
 
 //Функція друку результатів роботи програми
-//приймає вектори імен і рахунків
 void print_results( std::vector< Name_value > names_scores ) 
 {
-//    std::cout << "-------------------------- \n";
-//    for( int i = 0; i < names_scores.size(); ++i )
-//    {
-//        for( int j = i + 1; j < names_scores.size(); ++j )
-//        {
-//            if( names_scores.v_name[i] == names_scores.v_name[j] )
-//            {
-//                std::cout << "Ім'я " << names_scores.v_name[i] << " повторюється \n";
-//            }
-//        }
-//    }
-//    std::cout << "-------------------------- \n";
-    for ( auto&& score : names_scores )
-    {
-        std::cout << score.m_name << "\n";
-    }
+    std::cout << "-------------------------- \n";
 
-//    for( int i = 0; i < names_scores.size(); ++i )
-//    {
-//        std::cout << names_scores.name[i] << "\t" << names_scores.value[i] << "\n";
-//        std::cout << names_scores[i] <<  "\n";
-//    }
+    for( size_t i = 0u; i < names_scores.size(); ++i)
+    {
+        std::cout << names_scores[i].m_name << " " << names_scores[i].m_value << std::endl;
+    }
 }
+
 //тестова функція
 //імітує введення двох імен і рахунків та закінчення вводу
 //тестує чи правильно працює функція read_data() в частині розміру 
 //масиву введених значень
 
-void test_data_one( ) 
+void test_data_one( std::vector< Name_value > names_scores ) 
 {
     std::stringstream stream;
     stream << "dd" << " " << "1" << "\n" << "ee" << " " 
-    << "3" << "\n" << "NoName" << " " << "0" << "\n";
+    << "3" << "\n" << "dd" << " " << "1" << "\n" << "NoName" << " " << "0" << "\n";
 
-    std::vector< Name_value > test = read_data( stream );
+    std::vector< Name_value > test;
+    
+    read_data( names_scores, stream );
+    
+    Name_value temp;
+    for( size_t i = 0u; i < names_scores.size(); ++i)
+    {
+        temp.m_name = names_scores[i].m_name;
+        temp.m_value = names_scores[i].m_value;
+        test.push_back( temp );
+    }
+    
+    compare( test );
     print_results( test );
-
-    assertm( 2 == test.size(), "size 2 expected" );
-//    assertm( 2 == test.value.size(), "Scores size 2 expected");
+    
+    assertm( 3 == test.size(), "size 3 expected" );
 
     std::cout << "Test [" << __FUNCTION__ << "] PASSED\n";
 }
 
 int main()
 {
+    std::vector< Name_value > names_scores;
+//    read_data( names_scores );
+//    compare( names_scores );   
+//    print_results( names_scores );  
 
-//зняти слеші з test_data_one () і заслешити дві наступні строчки read_data() i print_rezult()
+//зняти слеші з test_data_one () і заслешити функції read_data(), compare() i print_results()
 //щоб працювала тестова функція
-   test_data_one(); 
-
-    //std::pair може зберігати два різні вектори в одному (об'єкті)    
-//    std::pair<std::vector<std::string>,std::vector<double>> result = read_data();
-//    print_results(result.first, result.second);
+    test_data_one( names_scores ); 
 
 	return 0;	
 }
