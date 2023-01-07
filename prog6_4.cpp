@@ -86,16 +86,14 @@ void test_data_one( std::vector< Name_value > names_scores )
     stream << "dd" << " " << "1" << "\n" << "ee" << " " 
     << "3" << "\n" << "dd" << " " << "1" << "\n" << "NoName" << " " << "0" << "\n";
 
-    std::vector< Name_value > test;
+    std::vector< Name_value > test( 3 );
     
     read_data( names_scores, stream );
     
-    Name_value temp;
     for( size_t i = 0u; i < names_scores.size(); ++i)
     {
-        temp.m_name = names_scores[i].m_name;
-        temp.m_value = names_scores[i].m_value;
-        test.push_back( temp );
+        test[i].m_name = names_scores[i].m_name;
+        test[i].m_value = names_scores[i].m_value;
     }
     
     compare( test );
