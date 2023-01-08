@@ -1,49 +1,33 @@
-//гра 'бики і корови'
+//гра 'бики і корови' з літерами
 #include <iostream>
 #include <vector>
 #include <stdlib.h>	//для виклику функції rand()
 #include <time.h>	//для виклику функції time()
-#include <ctime>
+#include <ctime>    
 #include <random>
 
 
-//функція генерує випадкове число у визначеному діапазоні
-//приймає мінімальне і максимальне число діапазону
-//повертає випадкове ціле число з вибраного діапазону
-int get_random_number( int min_number, int max_number )
-{
-	//установка генератора випадкових числел (srand())
-	//тобто задається число, на основі якого вираховується послідовність випадкових чисел з допомогою rand()
-	//число задається функцією time(), NULL - це число мілісекунд, які
-	//пройшли від 01.01.1970 року 
-//	srand(time(NULL));	
-	
-    int rand_number = min_number + rand() % (max_number - min_number + 1);
-	return rand_number;
-}
-
-//функція введення цілого числа з необхідними обмеженнями
-//повертає ціле число
-//запобігає некоректному вводу числа
-int get_number( std::istream &stream = std::cin ) 
+//функція введення літери з необхідними обмеженнями
+//повертає одну маленьку англійську літеру
+//запобігає некоректному вводу
+std::string get_letter( std::istream &stream = std::cin ) 
 {
     while (true)
     {
-        std::string number_str;
-        stream >> number_str;
+        std::string letter;
+        stream >> letter;
         try 
         {
-            const int number{ std::stoi( number_str ) };
-            if( 1 != number_str.size() ) 
+            if( 1 != letter.size() ) //не пропускає білььше 1 введеного символа
             {
-                throw std::invalid_argument( "Out of range 0-9" );
+                throw std::invalid_argument( "Out of range 1 letter" );
             }
-            if( 0 > number || 9 < number )
+            if( "a" > letter || "z" < letter ) //не пропускає будь які символи крім маленьких англ. літер
             {
-                throw std::invalid_argument( "Out of range 0-9" );
+                throw std::invalid_argument( "Out of range a-z" );
             }
             stream.ignore(32767,'\n'); //забирає лишні введені символи
-            return number;
+            return letter;
         }
         catch(std::invalid_argument const& ex) {
             std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
@@ -56,6 +40,8 @@ int get_number( std::istream &stream = std::cin )
     }
 }
 
+//функція генерації 4 випадкових літер
+//видає вектор з 4 випадковими літерами
 void get_mystery_letters( std::vector< std::string >& mystery_letters )
 {
     std::string rand_letter;
@@ -65,7 +51,7 @@ void get_mystery_letters( std::vector< std::string >& mystery_letters )
     for ( size_t index = 0u; index < mystery_letters.size(); )
     {
         rand_letter = rn( gen );
-        std::string mystery_number = rand_letter;
+        std::string mystery_letter = rand_letter;
         bool is_unique = true;
         for( auto letter : mystery_letters ) 
         {
@@ -77,58 +63,60 @@ void get_mystery_letters( std::vector< std::string >& mystery_letters )
         }
         if( is_unique ) 
         {
-            mystery_letters[ index ] = mystery_letters;
+            mystery_letters[ index ] = mystery_letter;
             ++index;
         }
     }
 }
 
-void get_answer_numbers( std::vector< int >& answer_numbers )
+//функція введення 4 літер щоб вгадати випадково загадані
+//формує вектор з 4 введеними літерами
+void get_answer_letters( std::vector< std::string >& answer_letters )
 {
-    answer_numbers.assign(4,255);
+    answer_letters.assign( 4, "AA" );
     std::cout << '\n';
-    for ( size_t index = 0u; index < answer_numbers.size(); )
+    for ( size_t index = 0u; index < answer_letters.size(); )
     {
-        std::cout << "Введіть число #" << index + 1 << "\n";
-        uint8_t answer_number = get_number( );
+        std::cout << "Введіть літеру #" << index + 1 << "\n";
+        std::string answer_letter = get_letter( );
         bool is_unique = true;
-        for( auto number : answer_numbers ) 
+        for( auto letter : answer_letters ) 
         {
-            if( number == answer_number ) 
+            if( letter == answer_letter ) 
             {
-                std::cout << "Введене число #" << index + 1 << " співпадає з раніше введеним числом." << "\n";
-                std::cout << "Введіть число #" << index + 1 << " повторно:\n";
+                std::cout << "Введена літера #" << index + 1 << " співпадає з раніше введеною літерою." << "\n";
+                std::cout << "Введіть літеру #" << index + 1 << " повторно:\n";
                 is_unique = false;
                 break;
             }
         }
         if( is_unique ) 
         {
-            answer_numbers[ index ] = answer_number;
+            answer_letters[ index ] = answer_letter;
             ++index;
         }
     }
 }
 
-//функція порівняння вертора випадкових чисел і введеного вектора
-//і визначнення співпадіння чисел і їх позицій відповідно до умов гри
-void compare_numbers( const std::vector< int >& mystery_numbers, const std::vector< int >& answer_numbers, int& cows, int& bulls )
+//функція порівняння вертора випадкових літер і введеного вектора
+//і визначнення співпадіння літер і їх позицій відповідно до умов гри
+void compare_letters( const std::vector< std::string >& mystery_letters, const std::vector< std::string >& answer_letters, int& cows, int& bulls )
 {
     bulls = 0;
     cows = 0;
-    for( size_t i = 0u; i < mystery_numbers.size(); ++i )
+    for( size_t i = 0u; i < mystery_letters.size(); ++i )
     {
-        if( mystery_numbers[i] == answer_numbers[i] )
+        if( mystery_letters[i] == answer_letters[i] )
         {
             ++bulls;
         }
     }
 
-    for( size_t i = 0u; i < mystery_numbers.size(); ++i )
+    for( size_t i = 0u; i < mystery_letters.size(); ++i )
     {
-        for( size_t j = 0u; j < mystery_numbers.size(); ++j )
+        for( size_t j = 0u; j < mystery_letters.size(); ++j )
         {
-            if( mystery_numbers[i] == answer_numbers[j] )
+            if( mystery_letters[i] == answer_letters[j] )
             {
                 ++cows;
             }
@@ -138,16 +126,16 @@ void compare_numbers( const std::vector< int >& mystery_numbers, const std::vect
 }
 
 //функція виводу результатів порівняння
-void print_results( const std::vector< int >& mystery_numbers, const std::vector< int >& answer_numbers, int cows, int bulls )
+void print_results( const std::vector< std::string >& mystery_letters, const std::vector< std::string >& answer_letters, int cows, int bulls )
 {
-    std::cout << "Загадані числа: \n";
-    for( auto x : mystery_numbers ) 
+    std::cout << "Загадані літери: \n";
+    for( auto x : mystery_letters ) 
     {
        std::cout << x << '\t';
     }
     std::cout << '\n';
-    std::cout << "Введені числа: \n";
-    for( auto y : answer_numbers ) 
+    std::cout << "Введені літери: \n";
+    for( auto y : answer_letters ) 
     {
         std::cout << y << '\t';
     }
@@ -161,28 +149,30 @@ void print_results( const std::vector< int >& mystery_numbers, const std::vector
 int main ()
 {
     std::cout << "Вас вітає гра 'Бички і корови'.\n";
+    std::cout << "Намагаємося вгадати 4 літери.\n";
+    std::cout << "Вводимо і вгадуємо лише маленькі англійські літери від 'a' до 'z'.\n";
     std::vector< std::string > mystery_letters( 4 );
-    std::vector< int > answer_numbers( 4,-1 );
+    std::vector< std::string > answer_letters( 4 );
     std::cout << '\n';
     int cows = 0;
     int bulls = 0;
-    get_mystery_numbers( mystery_numbers );
+    get_mystery_letters( mystery_letters );
     for(;;)
     {
         if( bulls == 4 )
         {
-            std::cout << "Загадані числа: \n";
-            for( auto x : mystery_numbers ) 
+            std::cout << "Загадані літери: \n";
+            for( auto x : mystery_letters ) 
             {
                 std::cout << x << '\t';
             }
             std::cout << '\n';
-            std::cout << "Вітаємо, ви відгадали всі числа на своїх місцях і перемогли! \n";
+            std::cout << "Вітаємо, ви відгадали всі літери на своїх місцях і перемогли! \n";
             break;
         }
-        get_answer_numbers( answer_numbers );
-        compare_numbers( mystery_numbers, answer_numbers, cows, bulls );
-        print_results( mystery_numbers, answer_numbers, cows, bulls );
+        get_answer_letters( answer_letters );
+        compare_letters( mystery_letters, answer_letters, cows, bulls );
+        print_results( mystery_letters, answer_letters, cows, bulls );
     }
 	return 0;
 }
